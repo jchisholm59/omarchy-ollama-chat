@@ -31,15 +31,16 @@ model and the Think toggle there):
 
 ```json
 {
-  "host": "http://192.168.2.61:11434",
+  "host": "http://192.168.1.50:11434",
   "systemPrompt": "..."
 }
 ```
 
-- `host`: your Ollama server. The default is the author's Mac mini, so set this first.
+- `host`: your Ollama server. Defaults to `http://localhost:11434` (Ollama on this machine); set it to reach
+  one elsewhere on the network.
 - `systemPrompt`: sent as a hidden first message. The default tells the model what it is (`{model}`, `{size}`,
   `{quant}`) and that it runs locally on `{host}`, because models can't know that and otherwise claim to be in
-  the cloud. Set to `""` to send none.
+  the cloud. Set your own (e.g. to name the machine it runs on) or `""` to send none.
 
 Reload after editing the file by hand: `omarchy-shell shell rescanPlugins`.
 

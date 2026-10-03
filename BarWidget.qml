@@ -24,7 +24,7 @@ BarWidget {
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 
-  readonly property string defaultHost: "http://192.168.2.61:11434"
+  readonly property string defaultHost: "http://localhost:11434"
   readonly property string stateDir: Quickshell.env("HOME") + "/.config/ollama-chat"
   readonly property string binDir: Qt.resolvedUrl("bin").toString().replace(/^file:\/\//, "")
   readonly property int pingSeconds: 30
@@ -34,10 +34,10 @@ BarWidget {
   // state.json ("" turns it off); {model}, {size}, {quant} and {host} are filled in.
   readonly property string defaultSystemPrompt:
     "Facts about you: you are {model} ({size} parameters, {quant}), an open model running locally through " +
-    "Ollama on the user's Mac mini ({host}) on their home network, not in the cloud. If the user asks " +
-    "anything about you (who or what you are, \"tell me about yourself\", where or how you run), always " +
-    "mention which model you are and that you run on their Mac mini, in your own words and talking to them " +
-    "as \"you\" (e.g. \"your Mac mini\"). Don't bring this up otherwise; just be a helpful, concise assistant."
+    "Ollama on the user's own machine ({host}), not in the cloud. If the user asks anything about you (who or " +
+    "what you are, \"tell me about yourself\", where or how you run), mention which model you are and that " +
+    "you run locally on their machine, in your own words. Don't bring this up otherwise; just be a helpful, " +
+    "concise assistant."
 
   property bool opened: false
   property var appState: ({})
