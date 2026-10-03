@@ -22,7 +22,18 @@ llama icon for a chat panel with a model picker, streamed replies and per-reply 
 omarchy plugin add https://github.com/jchisholm59/omarchy-ollama-chat.git --enable
 ```
 
-Needs `curl`, `jq`, `wl-clipboard` and `poppler` (for `pdftotext`), all part of a stock Omarchy install.
+Needs `curl`, `jq`, `wl-clipboard` and `poppler` (for `pdftotext`), all part of a stock Omarchy install, plus an
+Ollama server somewhere on your network (or on this machine). No sudo or system changes; everything lives in
+the plugin folder and `~/.config/ollama-chat/`.
+
+<p><img src="preview.png" alt="The chat panel: a model picker, a streamed reply describing an attached image, and the speed stats line" width="420"></p>
+
+## Remove
+
+```bash
+omarchy plugin remove jim.ollama-chat
+rm -rf ~/.config/ollama-chat     # optional: saved host, model and prompt
+```
 
 ## Configure
 
