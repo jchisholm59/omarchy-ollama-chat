@@ -26,7 +26,7 @@ Needs `curl`, `jq`, `wl-clipboard` and `poppler` (for `pdftotext`), all part of 
 Ollama server somewhere on your network (or on this machine). No sudo or system changes; everything lives in
 the plugin folder and `~/.config/ollama-chat/`.
 
-<p><img src="preview.png" alt="The chat panel: a model picker, a streamed reply describing an attached image, and the speed stats line" width="420"></p>
+<p><img src="preview.png" alt="The chat panel: a model picker, a streamed markdown reply describing an attached wallpaper, and the speed stats line" width="420"></p>
 
 ## Remove
 
