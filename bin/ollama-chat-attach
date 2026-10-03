@@ -1,0 +1,48 @@
+#!/bin/bash
+# Turn files into chat attachments, one JSON object per line on stdout:
+#   {"kind":"image","name":...,"b64":...}             images (go to the model's vision input)
+#   {"kind":"text","name":...,"text":...,"cut":bool}  text files and PDFs (added to the message)
+#   {"kind":"error","name":...,"error":...}
+# Usage: ollama-chat-attach <path>...
+set -uo pipefail
+
+MAX_IMAGE_BYTES=$((20 * 1024 * 1024))
+MAX_TEXT_CHARS=100000
+
+error() { jq -nc --arg name "$1" --arg error "$2" '{kind: "error", name: $name, error: $error}'; }
+
+# jq -R reads raw text (invalid UTF-8 becomes U+FFFD) and slices by characters, not bytes
+text() {
+  jq -Rsc --arg name "$1" --argjson max "$MAX_TEXT_CHARS" \
+    '{kind: "text", name: $name, text: .[:$max], cut: (length > $max)}'
+}
+
+for path in "$@"; do
+  name=$(basename "$path")
+  if [[ ! -r $path || -d $path ]]; then
+    error "$name" "can't read it"
+    continue
+  fi
+  ext=${name##*.}
+  case ${ext,,} in
+    png | jpg | jpeg | gif | webp | bmp)
+      if (($(stat -c %s "$path") > MAX_IMAGE_BYTES)); then
+        error "$name" "over $((MAX_IMAGE_BYTES / 1024 / 1024)) MB"
+      else
+        jq -nc --arg name "$name" --rawfile b64 <(base64 -w0 "$path") '{kind: "image", name: $name, b64: $b64}'
+      fi
+      ;;
+    pdf)
+      if ! pdftotext -layout "$path" - 2>/dev/null | text "$name"; then
+        error "$name" "couldn't read text from it"
+      fi
+      ;;
+    *)
+      if [[ $(file -b --mime-encoding "$path") == binary ]]; then
+        error "$name" "looks like a binary file; only images, PDFs and text can be attached"
+      else
+        text "$name" <"$path"
+      fi
+      ;;
+  esac
+done

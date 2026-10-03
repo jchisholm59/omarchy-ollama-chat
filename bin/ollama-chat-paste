@@ -1,0 +1,34 @@
+#!/bin/bash
+# Paste handler: if the clipboard holds an image or copied files, print them as
+# attachments (same format as ollama-chat-attach). Exits 3 when it's anything
+# else, so the panel falls back to an ordinary text paste.
+set -uo pipefail
+here=$(dirname "$(readlink -f "$0")")
+
+types=$(wl-paste --list-types 2>/dev/null) || exit 3
+
+for mime in image/png image/jpeg image/webp image/gif image/bmp; do
+  if grep -qx "$mime" <<<"$types"; then
+    dir=$(mktemp -d)
+    trap 'rm -rf "$dir"' EXIT
+    file="$dir/pasted image.${mime#image/}"
+    wl-paste --no-newline --type "$mime" >"$file"
+    "$here/ollama-chat-attach" "$file"
+    exit 0
+  fi
+done
+
+if grep -qx 'text/uri-list' <<<"$types"; then
+  mapfile -t paths < <(wl-paste --no-newline --type text/uri-list | python3 -c '
+import sys, urllib.parse
+for line in sys.stdin:
+    line = line.strip()
+    if line.startswith("file://"):
+        print(urllib.parse.unquote(urllib.parse.urlparse(line).path))')
+  if ((${#paths[@]})); then
+    "$here/ollama-chat-attach" "${paths[@]}"
+    exit 0
+  fi
+fi
+
+exit 3

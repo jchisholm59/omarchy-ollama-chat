@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "jim.ollama-chat",
+  "name": "Ollama Chat",
+  "version": "1.0.0",
+  "author": "jim",
+  "license": "MIT",
+  "description": "Bar icon that opens a sticky chat panel for testing an Ollama server: model picker, streamed replies, thinking toggle, image/file attachments and tokens/sec stats.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Ollama Chat",
+    "description": "Chat with a model on an Ollama server, with per-reply speed stats.",
+    "category": "AI",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
